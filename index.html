@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>UE Basic Ed | Customer Queue Numbering</title>
+	<style>
+		html {
+			background: url(images/bg.jpg);
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-color: white;
+			font-family:arial;
+
+		}
+
+		h1 {
+			text-align: center;
+			-webkit-text-stroke-width: 1.4px;
+    		-webkit-text-stroke-color: black;
+			
+		}
+
+		.head {
+			font-size: 2.5rem;
+			font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+			background-color:#ba0000;
+			color: white;
+			border: px solid black;
+			
+
+		}
+
+		.parent {
+			display: flex;
+			width: 100%;
+			margin: 0 auto;
+			flex-wrap: nowrap;
+		}
+
+		.child1 {
+			width: 50%;
+		}
+
+		.child2 {
+			width: 50%;
+		}
+
+		button {
+			width: 8rem;
+			height: 3.2rem;
+			background: white;
+			transition: .75s;
+			font-weight: bolder;
+		}
+		select{
+			width: 7rem;
+			height: 2.3rem;
+			background: white;
+			transition: .75s;
+			font-weight: bolder;
+		}
+		
+		button:hover {
+			background-color:#ff0000;
+			color: white;
+			transition: .50s;
+			border: 2px solid white;
+		}
+
+		.panel {
+			background-color: rgba(255, 255, 255, 0.5);
+			margin: 0 auto;
+			padding: 10px;
+			width: 90%;
+			height: 65vh;
+		}
+		.logo{
+			width: 3.3rem;
+			padding-right: 3px;
+			margin: 0 auto;
+		}
+		#nowServing, #nowServing1{
+			color: #ba0000;
+			font-size: 1.5rem;
+		}
+		table{
+			width: 100%;
+			background: #ba0000;
+			height: 23vh;
+		}
+		.lo{
+			width: 30%;
+			height: rem;
+			border: px solid black;
+			
+		}
+		.h{
+			width: 40%;
+			border: px solid black;
+			color: white;
+		}
+		.qq{
+			height: rem;
+		}
+		footer{
+			color: white;
+			font-size: 1.2rem;
+			font-weight: bolder;
+	-webkit-text-stroke-width: .6px;
+    -webkit-text-stroke-color: black;
+		}
+	</style>
+</head>
+
+<body>
+	<table>
+		<tr>
+			<td class="lo"><img src="images/ue.png" style="width: 20%; float: right;"></td>
+			<td class="h"><h1>UE Basic Education Department</h1></td>
+			<td class="lo"><img src="images/basiced.png" style="width: 20%; float: left;"></td>
+		</tr>
+		<tr class="qq">
+			<td class="lo"></td>
+			<td class="h"><h1>Customer Queue System</h1></td>
+			<td class="lo"></td>
+		</tr>
+	</table>
+
+	<div class="parent">
+		<div class="child1">
+			<div class="panel">
+				<h2>Now Serving:</h2>
+				<p id="nowServing">-</p>
+				<button id="sounds" onclick="displayNowServing()">DISPLAY NOW SERVING</button>
+				<select id="myDropdown">
+					<option value=" -">-</option>
+					<option value=" 1">Window 1</option>
+					<option value=" 2">Window 2</option>
+					<option value=" 3">Window 3</option>
+				</select>
+				<audio id="sound" src="sounds/sound.mp3"></audio>
+				<h2>Queue:</h2>
+				<ol id="queueList">-</ol>
+				<h2>Total Client/s:</h2>
+				<p id="totalCustomers">0</p>
+				<button onclick="addCustomer()">ADD CLIENT</button>
+				<button onclick="serveNext()">NEXT</button>
+				<button onclick="manuallyServe()">TYPE NUMBER</button>
+				<button onclick="resetQueue()">RESET QUEUE</button>
+			</div>
+		</div>
+		<div class="child2">
+			<div class="panel">
+				<h2>Now Serving (Priority):</h2>
+				<p id="nowServing1">-</p>
+				<button onclick="displayNowServing()">DISPLAY NOW SERVING</button>
+				<select id="myDropdown1">
+					<option value=" -">-</option>
+					<option value=" 1">Window 1</option>
+					<option value=" 2">Window 2</option>
+					<option value=" 3">Window 3</option>
+				</select>
+				<h2>Queue:</h2>
+				<ol id="queueList1">-</ol>
+				<h2>Total Client/s:</h2>
+				<p id="totalCustomers1">0</p>
+				<button onclick="addCustomer1()">ADD CLIENT</button>
+				<button onclick="serveNext1()">NEXT</button>
+				<button onclick="manuallyServe1()">TYPE NUMBER</button>
+				<button onclick="resetQueue1()">RESET QUEUE</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		//https://pbs.twimg.com/media/Etm2bl-UcAApotv?format=jpg&name=4096x4096
+		// Var
+		let servingNumber = "-";
+		let queue = [1];
+		let servingNumber1 = "-";
+		let queue1 = [];
+		
+
+		// Pang add ng customer
+		function addCustomer() {
+			queue.push(queue.length + 1);
+			updateDisplay();
+		}
+		function addCustomer1() {
+			queue1.push(queue1.length + 1);
+			updateDisplay1();
+		}
+
+		// serve ng customer
+		function serveNext() {
+			if (queue.length > 0) {
+				servingNumber = queue.shift();
+				updateDisplay();
+			}
+		}
+		function serveNext1() {
+			if (queue1.length > 0) {
+				servingNumber1 = queue1.shift();
+				updateDisplay1();
+			}
+		}
+
+		// Manual Serve
+
+		function manuallyServe() {
+			let customerNumber = prompt("Enter customer number:");
+			if (customerNumber && !isNaN(customerNumber)) {
+				customerNumber = parseInt(customerNumber);
+				if (queue.includes(customerNumber)) {
+					queue.splice(queue.indexOf(customerNumber), 1);
+					servingNumber = customerNumber;
+					updateDisplay();
+				} else {
+					alert("Customer number not found in queue.");
+				}
+			} else {
+				alert("Invalid input.");
+			}
+		}
+		function manuallyServe1() {
+			let customerNumber = prompt("Enter customer number:");
+			if (customerNumber && !isNaN(customerNumber)) {
+				customerNumber = parseInt(customerNumber);
+				if (queue1.includes(customerNumber)) {
+					queue1.splice(queue1.indexOf(customerNumber), 1);
+					servingNumber1 = customerNumber;
+					updateDisplay1();
+				} else {
+					alert("Customer number not found in queue.");
+				}
+			} else {
+				alert("Invalid input.");
+			}
+		}
+
+		// Reset 
+		function resetQueue() {
+			servingNumber = "-";
+			queue = [ ];
+			updateDisplay();
+		}
+		function resetQueue1() {
+			servingNumber1 = "-";
+			queue1 = [];
+			updateDisplay1();
+		}
+
+		// Update
+		function updateDisplay() {
+			document.getElementById("nowServing").textContent = servingNumber;
+			document.getElementById("totalCustomers").textContent = queue.length;
+			let queueList = "";
+			for (let i = 0; i < queue.length; i++) {
+				queueList += "<li style='display:inline'>" + queue[i] + "-</li>";
+			}
+			document.getElementById("queueList").innerHTML = queueList;
+		}
+		function updateDisplay1() {
+			document.getElementById("nowServing1").textContent = servingNumber1;
+			document.getElementById("totalCustomers1").textContent = queue1.length;
+			let queueList = "";
+			for (let i = 0; i < queue1.length; i++) {
+				queueList += "<li style='display:inline'>" + queue1[i] + "-</li>";
+			}
+			document.getElementById("queueList1").innerHTML = queueList;
+		}
+
+		//Now Serving
+		function displayNowServing() {
+			if (typeof nowservingWindow === "undefined" || nowservingWindow.closed) {
+				nowservingWindow = window.open("", "nowServingWindow");
+			}
+			var sound = document.getElementById("sound");
+    		sound.play();
+			var dropdown = document.getElementById("myDropdown");
+			var choice = dropdown.options[dropdown.selectedIndex].value;
+			var dropdown1 = document.getElementById("myDropdown1");
+			var choice1 = dropdown1.options[dropdown1.selectedIndex].value;
+			nowservingWindow.document.body.style.backgroundImage = "url(https://gcdnb.pbrd.co/images/samceirtmjGZ.jpg?o=1)";
+			nowservingWindow.document.body.style.backgroundSize = "cover";
+			nowservingWindow.document.body.innerHTML = "<h1 style='font-family:arial;font-size:3rem; margin: 0 auto; text-align:center; background:#ba0000; color:white; width:80%; -webkit-text-stroke-width: 1.5px;-webkit-text-stroke-color: black;'>NOW SERVING</h1><div style='display:flex; flex-direction: row; height:90vh; border-bottom:3px solid #ba0000;width: 80%; margin: 0 auto; background:rgba(255, 255, 255, 0.5); text-align:center;'><div style='border-left:5px solid #ba0000; width:42.5%'><h1 style='font-size: 5rem;font-family:arial;'>Regular</h1><h1 style='font-family:arial;font-size:13rem'>" + servingNumber + "</h1><h1 style='background-color:#ba0000; color:white; font-family:arial;'>Window Number:" + choice +"</h1></div><div style='border:px solid black; width:15%;'><img src='https://www.ue.edu.ph/mla/wp-content/uploads/2020/12/basic_ed.png' width=100% style='margin-top:15rem;'></div><div style='border-right:5px solid #ba0000; width:42.5%'><h1 style='font-size: 5rem; font-family:arial;'>Priority</h1><h1 style='font-size:13rem; font-family:arial;'>" + servingNumber1 +"</h1><h1 style='background-color:#ba0000; color:white; font-family:arial;'>Window Number:" + choice1 +"</h1></div></div>";
+		}
+		
+	</script>
+	<br>
+	<footer><center>&copy; Ralph Andrew C. Reyes . Brian Jansen G. Chua . Earl Grant B. Pesebre | University of the East | 2023</center></footer>
+</body>
+</html>
